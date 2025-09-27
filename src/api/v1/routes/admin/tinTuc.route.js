@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const upload = require('../../../../../src/api/v1/middleware/multer');
+const { authMiddleware, adminMiddleware } = require('../../../../../src/api/v1/middleware/auth.middleware');
 
 const {
     handlerGetAllNews,
@@ -8,8 +9,8 @@ const {
     handlerDeleteNews,
 } = require('../../../../../src/api/v1/controllers/admin/tinTuc.controller');
 
-router.get('/', handlerGetAllNews);
-router.post('/add', upload.single('image'), handlerAddNews);
-router.delete('/delete/:id', handlerDeleteNews);
+router.get('/', authMiddleware, adminMiddleware, handlerGetAllNews);
+router.post('/add', authMiddleware, adminMiddleware, upload.single('image'), handlerAddNews);
+router.delete('/delete/:id', authMiddleware, adminMiddleware, handlerDeleteNews);
 
 module.exports = router;

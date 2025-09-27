@@ -26,13 +26,43 @@ const registerUser = async (name, email, password) => {
     const verifyUrl = `${config.frontendUrl}/verify-email?token=${verifyToken}`;
 
     await transporter.sendMail({
-        from: `"Bean Farm" <${process.env.EMAIL_USER}>`,
+        from: `"Không Khoảng Cách Logistics" <${process.env.EMAIL_USER}>`,
         to: email,
         subject: 'Xác nhận tài khoản của bạn',
         html: `
-            <p>Xin chào ${name},</p>
-            <p>Vui lòng click link dưới đây để kích hoạt tài khoản:</p>
-            <a href="${verifyUrl}">${verifyUrl}</a>
+            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #1F2937; line-height: 1.6;">
+                <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #E5E7EB; border-radius: 12px; background-color: #ffffff;">
+                    
+                    <h2 style="color: #111827; font-size: 24px; margin-bottom: 16px;">Chào ${name},</h2>
+                    
+                    <p style="font-size: 16px; margin-bottom: 24px;">
+                    Cảm ơn bạn đã đăng ký tại <strong>Không Khoảng Cách Logistics</strong>. 
+                    Vui lòng nhấn nút dưới đây để xác nhận tài khoản của bạn:
+                    </p>
+                    
+                    <div style="text-align: center; margin-bottom: 24px;">
+                    <a 
+                        href="${verifyUrl}" 
+                        style="display: inline-block; padding: 12px 24px; background-color: #3B82F6; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: bold; transition: background-color 0.3s;"
+                        onMouseOver="this.style.backgroundColor='#2563EB'"
+                        onMouseOut="this.style.backgroundColor='#3B82F6'"
+                    >
+                        Xác nhận tài khoản
+                    </a>
+                    </div>
+                    
+                    <p style="font-size: 14px; color: #6B7280;">
+                    Nếu bạn không tạo tài khoản này, vui lòng bỏ qua email này.
+                    </p>
+
+                    <hr style="border: none; border-top: 1px solid #E5E7EB; margin: 24px 0;" />
+
+                    <p style="font-size: 12px; color: #9CA3AF; text-align: center;">
+                    &copy; 2025 Không Khoảng Cách Logistics. Mọi quyền được bảo lưu.
+                    </p>
+
+                </div>
+            </div>
         `,
     });
 
@@ -68,4 +98,12 @@ const loginUser = async (email, password) => {
     return { token, user };
 };
 
-module.exports = { registerUser, verifyUserEmail, loginUser };
+const verifyToken = (token) => {
+    try {
+        return jwt.verify(token, config.jwtSecret);
+    } catch (err) {
+        return null;
+    }
+};
+
+module.exports = { registerUser, verifyUserEmail, loginUser, verifyToken };

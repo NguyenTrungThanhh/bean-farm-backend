@@ -1,4 +1,8 @@
-const { getAllNews, getNewsBySlug } = require('../../../../../src/api/v1/services/tinTuc.service');
+const {
+    getAllNews,
+    getNewsBySlug,
+    getNewsWithPagination,
+} = require('../../../../../src/api/v1/services/tinTuc.service');
 
 const handlerGetAllNews = async (req, res) => {
     try {
@@ -47,7 +51,33 @@ const handlerGetNewsBySlug = async (req, res) => {
     }
 };
 
+const handlerGetNewsWithPagination = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 9;
+
+        const { news, total, totalPages } = await getNewsWithPagination(page, limit);
+
+        const filteredNews = news.map((item) => ({
+            name: item.name,
+            slug: item.slug,
+            content: item.content,
+            date: item.date,
+            image: item.image,
+        }));
+
+        res.json({
+            success: true,
+            news: filteredNews,
+            pagination: { page, limit, total, totalPages },
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 module.exports = {
     handlerGetAllNews,
     handlerGetNewsBySlug,
+    handlerGetNewsWithPagination,
 };
